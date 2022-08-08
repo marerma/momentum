@@ -44,6 +44,7 @@ const userName = document.querySelector('.name')
 
 function setLocalStorage() {
   localStorage.setItem('name', userName.value);
+  localStorage.setItem('city', city.value)
 }
 window.addEventListener('beforeunload', setLocalStorage)
 
@@ -51,6 +52,9 @@ function getLocalStorage() {
   if(localStorage.getItem('name')) {
     userName.value = localStorage.getItem('name');
   }
+
+  if(localStorage.getItem('city'))
+  city.value = localStorage.getItem('city')
 }
 window.addEventListener('load', getLocalStorage)
 
@@ -100,3 +104,35 @@ function getPrevSlide () {
 
 sliderNext.addEventListener('click', getNextSlide)
 sliderPrev.addEventListener('click', getPrevSlide)
+
+//weather
+const city = document.querySelector('.city')
+
+const weatherIcon = document.querySelector('.weather-icon');
+const temp = document.querySelector('.temperature');
+const weatherDescription = document.querySelector('.weather-description');
+const wind = document.querySelector('.wind');
+const humidity = document.querySelector('.humidity');
+
+async function getWeather () {
+  try {
+  const url = `https://api.openweathermap.org/data/2.5/weather?q=${city.value}&lang=en&appid=baeee116da709abcca87c1e3328ee937&units=metric`
+  const result = await fetch(url)
+  const weatherData = await result.json()
+
+  temp.textContent = `${Math.round(weatherData.main.temp)}°C`
+  weatherDescription.textContent = weatherData.weather[0].description
+  wind.textContent = `Wind speed: ${Math.round(weatherData.wind.speed)} m/s`
+  humidity.textContent = `Humidity: ${weatherData.main.humidity}%`
+  weatherIcon.className = 'weather-icon owf'
+  weatherIcon.classList.add(`owf-${weatherData.weather[0].id}`)
+  }
+  catch (error) {
+    city.value = 'Minsk'
+    localStorage.setItem('city', city.value)
+    alert('Enter a correct name of the city')
+  }
+}
+
+getWeather()
+city.addEventListener('change', getWeather)
