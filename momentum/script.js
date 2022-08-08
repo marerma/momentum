@@ -29,13 +29,13 @@ function getTimeOfDay () {
   const date = new Date()
   const hours = date.getHours()
 if (hours >= 6 && hours <= 11) {
-  return 'Morning'
+  return 'morning'
 } else if (hours >= 12 && hours <= 17) {
-  return 'Afternoon'
+  return 'afternoon'
 } else if (hours >= 18 && hours <= 23) {
-  return 'Evening'
+  return 'evening'
 } else if (hours >= 0 && hours <= 6) {
-  return 'Night'
+  return 'night'
 }
 }
 
@@ -53,3 +53,50 @@ function getLocalStorage() {
   }
 }
 window.addEventListener('load', getLocalStorage)
+
+//bg and slider
+const body = document.querySelector('body')
+const sliderNext = document.querySelector('.slide-next')
+const sliderPrev = document.querySelector('.slide-prev')
+
+function getRandomNum(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min
+}
+
+let bgNum = getRandomNum(1, 20)
+
+function setBg (num) {
+  let numString = num.toString().padStart(2, "0")
+  const timeOfDay =  getTimeOfDay()
+  const bgUrl = `https://raw.githubusercontent.com/marerma/stage1-tasks/assets/images/${timeOfDay}/${numString}.jpg`
+  const img = new Image()
+  img.src = bgUrl
+  img.onload = () => {
+    body.style.backgroundImage = `url(${bgUrl})`
+  }
+}
+
+setBg(bgNum)
+
+function getNextSlide () {
+  if (bgNum != 20) {
+    bgNum = bgNum + 1
+  } else {
+    bgNum = 1
+  } 
+   setBg(bgNum)
+}
+
+function getPrevSlide () {
+  if (bgNum > 1) {
+    bgNum = bgNum - 1
+  } else {
+    bgNum = 20
+  }
+   setBg(bgNum)
+}
+
+sliderNext.addEventListener('click', getNextSlide)
+sliderPrev.addEventListener('click', getPrevSlide)
