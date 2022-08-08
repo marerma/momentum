@@ -136,3 +136,21 @@ async function getWeather () {
 
 getWeather()
 city.addEventListener('change', getWeather)
+
+
+//quotes
+let quoteText = document.querySelector('.quote')
+let quoteAuthor = document.querySelector('.author')
+const buttonQuote = document.querySelector('.change-quote')
+
+async function getQuotes() {  
+  const quotes = './assets/quotes.json';
+  const res = await fetch(quotes);
+  const data = await res.json();
+  let numberOfQuote = getRandomNum(0, data.quotes.length) 
+  quoteText.textContent = `"${data.quotes[numberOfQuote].quote}"`
+  quoteAuthor.textContent = data.quotes[numberOfQuote].author
+}
+
+buttonQuote.addEventListener('click', getQuotes)
+getQuotes();
