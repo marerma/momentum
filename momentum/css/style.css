@@ -40,7 +40,7 @@ body {
   align-items: center;
   justify-content: space-between;
   width: 250px;
-  margin-bottom: 28px;
+  margin-bottom: 15px;
 }
 
 .play-list {
@@ -67,6 +67,10 @@ body {
   left: 0;
   top: 2px;
   font-weight: 900;
+}
+.play-item-active {
+  color: #C5B358;
+  font-style: italic;
 }
 
 .item-active::before {
@@ -150,7 +154,7 @@ body {
   border-radius: 2px;
   height: 3px;
   color: rgba(189, 186, 186, 0.5);
-  outline: 1px solid rgba(189, 186, 186);;
+  outline: 1px solid rgba(189, 186, 186);
 }
 
 .volume-range::-webkit-slider-thumb {
@@ -163,6 +167,58 @@ body {
   margin-top: -3px;
 }
 
+.track-progress-container {
+  max-width: 40%;
+  margin-top: 5px;
+  height: 50px;
+}
+
+.track {
+-webkit-appearance: none;
+}
+
+.track::-webkit-progress-bar {
+  border-radius: 2px;
+  height: 6px;
+  color: rgba(24, 23, 23, 0.5);
+  outline: 1px solid rgb(78, 78, 78);
+}
+
+.track::-webkit-progress-value {
+  -webkit-appearance: none;
+  background: rgb(124, 125, 146);
+  border: 1px solid rgb(172, 170, 170);
+  cursor: pointer;
+  width: 4px;
+  height: 6px;
+  }
+
+  .trackTimeContainer {
+  width: 155px;
+  position: relative;
+}
+
+.currentTrackTime, .trackTime {
+  display: inline-block;
+  font-size: 10px;
+  color: rgb(114, 114, 119);
+  position: relative;
+  width: 50%;
+  text-align: left;
+}
+
+.trackTime {
+  text-align: right;
+}
+
+.track-name {
+  text-align: left;
+  font-size: 12px;
+  font-style: italic;
+  color: rgb(219, 219, 219);
+  height: 16px;
+  left: 10px;
+}
 
 .weather {
   display: flex;

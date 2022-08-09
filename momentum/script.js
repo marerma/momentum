@@ -189,6 +189,7 @@ function playSong () {
   audio.currentTime = 0
   isPlay = true
   audio.play() 
+  trackName.textContent = playList[songNum].title
   changePauseCLass()
   changeClassActiveSong ()
  }
@@ -239,9 +240,9 @@ function changeClassActiveSong () {
   let a = Array.from(songList)
   for (let i = 0; i < a.length; i++) {
       if (i === songNum){
-        a[i].classList.add('item-active')
+        a[i].classList.add('play-item-active')
       } else {
-        a[i].classList.remove('item-active')
+        a[i].classList.remove('play-item-active')
         a[i].classList.add('play-item')
   }
   }}
@@ -281,3 +282,44 @@ function changeVolume () {
 
 volumeRange.addEventListener('input', changeVolume)
 volumeBtn.addEventListener('click', muteGeneral)
+
+const progressBar = document.querySelector('.track')
+audio.ontimeupdate = progressUpdate
+progressBar.onclick = audioControl
+const currentTrackTime = document.querySelector('.currentTrackTime')
+const trackTime = document.querySelector('.trackTime')
+const trackName = document.querySelector('.track-name')
+
+function progressUpdate () {
+  let duration = audio.duration
+  let current = audio.currentTime
+  progressBar.value = current / duration * 100
+
+  const trackDuration = new Date(duration*1000);
+  let currentTime = new Date(current*1000)
+  trackTime.textContent = `${trackDuration.getMinutes()}:${trackDuration.getSeconds()}`
+  let currentSec = currentTime.getSeconds().toString().padStart(2, '0')
+  currentTrackTime.textContent = `${currentTime.getMinutes()}:${currentSec}`
+}
+
+playListElement.addEventListener('click', clickTrackTitle)
+
+function clickTrackTitle (event) {
+  let clickedTrack = event.target
+  let trackTitle = clickedTrack.textContent
+  playList.forEach((el, index)=> {
+    if (trackTitle === el.title) {
+      songNum = index
+      playSong()
+      }
+    })
+}
+
+function audioControl () {
+  let width = progressBar.offsetWidth
+  let pointer = event.offsetX
+  progressBar.value = pointer / width * 100
+  audio.pause()
+  audio.currentTime = audio.duration * (pointer / width)
+  audio.play()
+}

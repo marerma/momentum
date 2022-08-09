@@ -1,6 +1,6 @@
 const playList = [
   {      
-    title: 'Birds singing in the forest',
+    title: 'Birds singing in forest',
     src: './audio/birds-in-forest.mp3',
     duration: '00:28'
   },  
