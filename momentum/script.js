@@ -154,3 +154,96 @@ async function getQuotes() {
 
 buttonQuote.addEventListener('click', getQuotes)
 getQuotes();
+
+//audioplayer
+
+import playList from './audio/play-list.js'
+
+const play = document.querySelector('.play')
+const playNext = document.querySelector('.play-next')
+const playPrev = document.querySelector('.play-prev')
+
+const audio = new Audio()
+let isPlay = false
+let songNum = 0
+
+function changePauseCLass () {
+  if (!isPlay) {
+    play.classList.remove('pause')
+  } else {
+    play.classList.add('pause')
+  }
+}
+
+function playAudio () {
+  if (!isPlay) { 
+    playSong()
+  } else {
+    pauseSong()
+  }
+}
+
+function playSong () { 
+  audio.src = playList[songNum].src
+  audio.currentTime = 0
+  audio.volume = 0.5
+  isPlay = true
+  audio.play()
+  changePauseCLass()
+  changeClassActiveSong ()
+ }
+
+ function pauseSong () {
+  audio.pause();
+  isPlay = false
+  changePauseCLass()
+  changeClassActiveSong ()
+ }
+
+
+function nextSong () {
+  if (songNum < playList.length - 1) {
+    songNum += 1
+  } else {
+    songNum = 0
+  }
+  playSong()
+}
+
+
+function prevSong () {
+  if (songNum === 0) {
+    songNum = playList.length - 1
+  } else {
+    songNum -= 1
+  }
+  playSong()
+}
+
+play.addEventListener('click', playAudio)
+playNext.addEventListener('click', nextSong)
+playPrev.addEventListener('click', prevSong)
+
+
+const playListElement = document.querySelector('.play-list')
+const songList = playListElement.childNodes
+
+ playList.forEach(el => {
+  const li = document.createElement('li')
+  playListElement.append(li)
+  li.textContent = el.title
+  li.classList.add('play-item')
+})
+
+function changeClassActiveSong () {
+  let a = Array.from(songList)
+  for (let i = 0; i < a.length; i++) {
+      if (i === songNum){
+        a[i].classList.add('item-active')
+      } else {
+        a[i].classList.remove('item-active')
+        a[i].classList.add('play-item')
+  }
+  }}
+
+audio.addEventListener('ended', (event) => nextSong())
