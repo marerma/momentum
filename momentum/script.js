@@ -166,6 +166,7 @@ const playPrev = document.querySelector('.play-prev')
 const audio = new Audio()
 let isPlay = false
 let songNum = 0
+let isMuted = false
 
 function changePauseCLass () {
   if (!isPlay) {
@@ -186,9 +187,8 @@ function playAudio () {
 function playSong () { 
   audio.src = playList[songNum].src
   audio.currentTime = 0
-  audio.volume = 0.5
   isPlay = true
-  audio.play()
+  audio.play() 
   changePauseCLass()
   changeClassActiveSong ()
  }
@@ -247,3 +247,37 @@ function changeClassActiveSong () {
   }}
 
 audio.addEventListener('ended', (event) => nextSong())
+
+//advanced player
+const volumeBtn = document.querySelector('.volume-icon')
+const volumeRange = document.querySelector('.volume-range')
+
+function mute () {
+  volumeBtn.classList.add('volume-icon-mute')
+  isMuted = true
+  audio.muted = true
+  volumeRange.value = 0
+}
+
+function unmute () {
+  volumeBtn.classList.remove('volume-icon-mute')
+  audio.muted = false
+  isMuted = false
+  volumeRange.value = 50
+}
+
+function muteGeneral () {
+  if (!isMuted) {
+  mute()
+} else {
+  unmute()
+}
+}
+
+function changeVolume () {
+  let v = volumeRange.value
+  audio.volume = v / 100
+}
+
+volumeRange.addEventListener('input', changeVolume)
+volumeBtn.addEventListener('click', muteGeneral)
