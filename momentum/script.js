@@ -2,28 +2,25 @@
 const time = document.querySelector('.time')
 const dateFull = document.querySelector('.date')
 
-function showTime () {
-  const date = new Date()
-  const currentTime = date.toLocaleTimeString()
-  time.textContent = currentTime
-  setTimeout(showTime, 1000)
-  showDate()
-  getTimeOfDay();
-}
+const langName = document.querySelector('.lang-name')
+let langList = ['En', 'Ru']
+const langBtn = document.querySelector('.lang-icon')
+let langDefault = 'Ru'
+let language
+let windSpeed;
+let humidityScale;
+let url
+let speed
+const city = document.querySelector('.city')
 
-function showDate () {
-  const date = new Date()
-  const options = {weekday: 'long', month: 'long', day: 'numeric'}
-  const currentDate = date.toLocaleDateString('en-GB', options)
-  dateFull.textContent = currentDate;
-}
-
-showTime()
 
 //greetings
 const greeting = document.querySelector('.greeting')
-const timeOfDay = getTimeOfDay()
-greeting.textContent = `Good ${timeOfDay},`
+let timeOfDay = getTimeOfDay()
+setLanguageDefault()
+let langSelected = langName.textContent
+
+/*greeting.textContent = //`Good ${timeOfDay},`*/
 
 function getTimeOfDay () {
   const date = new Date()
@@ -37,6 +34,68 @@ if (hours >= 6 && hours <= 11) {
 } else if (hours >= 0 && hours <= 6) {
   return 'night'
 }
+}
+
+
+function showTime () {
+  const date = new Date()
+  const currentTime = date.toLocaleTimeString()
+  time.textContent = currentTime
+  setTimeout(showTime, 1000)
+  showDate()
+  getTimeOfDay();
+}
+
+function showDate () {
+  const date = new Date()
+  const options = {weekday: 'long', month: 'long', day: 'numeric'}
+  const currentDate = date.toLocaleDateString(language, options)
+  dateFull.textContent = currentDate;
+}
+
+showTime()
+
+import langArr from './locals/lang.js'
+
+langBtn.addEventListener('click', changeLanguageName)
+
+function changeLanguageName () {
+  if (langSelected === langList[0]) {
+     langName.textContent = langList[1] 
+     langSelected = langList[1]
+     changeLanguage () 
+  } else {
+    langName.textContent = langList[0]
+    langSelected = langList[0] 
+    changeLanguage ()
+  }
+}
+
+function setLanguageDefault () {
+    langName.textContent = langDefault
+    let greetName = document.querySelector('.placeholderName')
+    greetName.setAttribute('placeholder', langArr['placeholderName'][langDefault])
+    greeting.textContent = `${langArr[timeOfDay][langDefault]},` 
+    language = langArr['lang'][langDefault]
+    speed = `${langArr['weather'][langDefault][2]}`
+    windSpeed = `${langArr['weather'][langDefault][0]}`
+    humidityScale = `${langArr['weather'][langDefault][1]}`
+    city.value = "Минск"
+    city.setAttribute('placeholder', langArr['city'][langDefault])
+  }
+
+function changeLanguage () {
+    let greetName = document.querySelector('.placeholderName')
+    language = langArr['lang'][langSelected]
+    greetName.setAttribute('placeholder', langArr['placeholderName'][langSelected])
+    greeting.textContent  = `${langArr[timeOfDay][langSelected]},`
+    getWeather ()
+    getQuotes()
+    speed = `${langArr['weather'][langSelected][2]}`
+    windSpeed = `${langArr['weather'][langSelected][0]}`
+    humidityScale = `${langArr['weather'][langSelected][1]}`
+    city.setAttribute('placeholder', langArr['city'][langSelected])
+    city.value = langArr['city'][langSelected]
 }
 
 //name
@@ -78,7 +137,7 @@ function setBg (num) {
   const img = new Image()
   img.src = bgUrl
   img.onload = () => {
-    body.style.backgroundImage = `url(${bgUrl})`
+  body.style.backgroundImage = `url(${bgUrl})`
   }
 }
 
@@ -106,7 +165,8 @@ sliderNext.addEventListener('click', getNextSlide)
 sliderPrev.addEventListener('click', getPrevSlide)
 
 //weather
-const city = document.querySelector('.city')
+
+
 
 const weatherIcon = document.querySelector('.weather-icon');
 const temp = document.querySelector('.temperature');
@@ -116,22 +176,23 @@ const humidity = document.querySelector('.humidity');
 
 async function getWeather () {
   try {
-  const url = `https://api.openweathermap.org/data/2.5/weather?q=${city.value}&lang=en&appid=baeee116da709abcca87c1e3328ee937&units=metric`
+  url = `https://api.openweathermap.org/data/2.5/weather?q=${city.value}&lang=${language}&appid=baeee116da709abcca87c1e3328ee937&units=metric`
   const result = await fetch(url)
   const weatherData = await result.json()
 
   temp.textContent = `${Math.round(weatherData.main.temp)}°C`
   weatherDescription.textContent = weatherData.weather[0].description
-  wind.textContent = `Wind speed: ${Math.round(weatherData.wind.speed)} m/s`
-  humidity.textContent = `Humidity: ${weatherData.main.humidity}%`
+  wind.textContent = `${windSpeed}: ${Math.round(weatherData.wind.speed)} ${speed}` //`Wind speed: ${Math.round(weatherData.wind.speed)} m/s`
+  humidity.textContent = `${humidityScale}: ${weatherData.main.humidity}%`
   weatherIcon.className = 'weather-icon owf'
   weatherIcon.classList.add(`owf-${weatherData.weather[0].id}`)
+
   }
   catch (error) {
-    city.value = 'Minsk'
+    city.value = "Минск"
     localStorage.setItem('city', city.value)
     alert('Enter a correct name of the city')
-  }
+}
 }
 
 getWeather()
@@ -144,7 +205,7 @@ let quoteAuthor = document.querySelector('.author')
 const buttonQuote = document.querySelector('.change-quote')
 
 async function getQuotes() {  
-  const quotes = './assets/quotes.json';
+  const quotes = `./assets/quotes-${language}.json`;
   const res = await fetch(quotes);
   const data = await res.json();
   let numberOfQuote = getRandomNum(0, data.quotes.length) 
@@ -293,13 +354,19 @@ const trackName = document.querySelector('.track-name')
 function progressUpdate () {
   let duration = audio.duration
   let current = audio.currentTime
-  progressBar.value = current / duration * 100
 
+  if (isNaN(current / duration * 100)) {
+    progressBar.value = 0.0001
+  } else {
+    progressBar.value = current / duration * 100
+  }
+  
   const trackDuration = new Date(duration*1000);
   let currentTime = new Date(current*1000)
   trackTime.textContent = `${trackDuration.getMinutes()}:${trackDuration.getSeconds()}`
   let currentSec = currentTime.getSeconds().toString().padStart(2, '0')
   currentTrackTime.textContent = `${currentTime.getMinutes()}:${currentSec}`
+
 }
 
 playListElement.addEventListener('click', clickTrackTitle)
@@ -310,7 +377,7 @@ function clickTrackTitle (event) {
   playList.forEach((el, index)=> {
     if (trackTitle === el.title) {
       songNum = index
-      playSong()
+      playSong() //подумать над паузой и плеем при переключении
       }
     })
 }
@@ -323,3 +390,4 @@ function audioControl () {
   audio.currentTime = audio.duration * (pointer / width)
   audio.play()
 }
+

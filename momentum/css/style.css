@@ -80,7 +80,8 @@ body {
 .player-icon,
 .slider-icon,
 .change-quote,
-.volume-icon{
+.volume-icon, 
+.lang-icon {
   width: 32px;
   height: 32px;
   background-size: 32px 32px;
@@ -97,13 +98,15 @@ body {
 .player-icon:hover,
 .slider-icon:hover,
 .change-quote:hover,
-.volume-icon:hover {
+.volume-icon:hover,
+.lang-icon:hover {
   opacity: 1;
 }
 
 .player-icon:active,
 .slider-icon:active,
-.change-quote:active {
+.change-quote:active,
+.lang-icon:active {
   border: 0;
   outline: 0;  
   transform: scale(1.1);
@@ -194,7 +197,7 @@ body {
   }
 
   .trackTimeContainer {
-  width: 155px;
+  width: 180px;
   position: relative;
 }
 
@@ -204,7 +207,7 @@ body {
   color: rgb(114, 114, 119);
   position: relative;
   width: 50%;
-  text-align: left;
+  text-align: center;
 }
 
 .trackTime {
@@ -212,12 +215,36 @@ body {
 }
 
 .track-name {
-  text-align: left;
+  text-align: center;
   font-size: 12px;
   font-style: italic;
   color: rgb(219, 219, 219);
   height: 16px;
   left: 10px;
+}
+
+
+.lang-icon {
+background-image: url("../assets/svg/language-icon.svg");
+background-size: 24px 24px;
+width: 24px;
+height: 24px;
+}
+
+.language {
+width: 40%;
+display: flex;
+justify-content: flex-end;
+padding-top: 5px;
+}
+
+.lang-name{
+  font-size: 12px;
+  line-height: 14px;
+  color: #fff;
+  text-align: left;  
+  margin-top: 5px;
+  margin-right: 5px;
 }
 
 .weather {
@@ -327,7 +354,7 @@ body {
 
 .name {
   flex: 1;
-  max-width: 40%;
+  max-width: 45%;
   padding: 10px;
   font-size: 40px;
   text-align: left;
