@@ -11,6 +11,25 @@ let windSpeed;
 let humidityScale;
 let url
 let speed
+let settingItems = document.querySelectorAll('.setting-item-name')
+
+
+function setLangSetting () {
+let arraySettings = Array.from(settingItems)
+for (let i = 0; i < arraySettings.length; i++) {
+  arraySettings[i].textContent = `${langArr['settings-blocks'][langDefault][i]}`
+}
+document.querySelector('.settings-block-option').textContent = `${langArr['settings-option'][langDefault]}`
+}
+
+function changeLangSetting () {
+  let arraySettings = Array.from(settingItems)
+  for (let i = 0; i < arraySettings.length; i++) {
+    arraySettings[i].textContent = `${langArr['settings-blocks'][langSelected][i]}`
+  }
+  document.querySelector('.settings-block-option').textContent = `${langArr['settings-option'][langSelected]}`
+  }
+
 const city = document.querySelector('.city')
 
 
@@ -82,6 +101,7 @@ function setLanguageDefault () {
     humidityScale = `${langArr['weather'][langDefault][1]}`
     city.value = "Минск"
     city.setAttribute('placeholder', langArr['city'][langDefault])
+    setLangSetting ()
   }
 
 function changeLanguage () {
@@ -96,6 +116,7 @@ function changeLanguage () {
     humidityScale = `${langArr['weather'][langSelected][1]}`
     city.setAttribute('placeholder', langArr['city'][langSelected])
     city.value = langArr['city'][langSelected]
+    changeLangSetting ()
 }
 
 //name
@@ -248,6 +269,7 @@ function playAudio () {
 function playSong () { 
   audio.src = playList[songNum].src
   audio.currentTime = 0
+  audio.volume = 0.2
   isPlay = true
   audio.play() 
   trackName.textContent = playList[songNum].title
@@ -390,4 +412,43 @@ function audioControl () {
   audio.currentTime = audio.duration * (pointer / width)
   audio.play()
 }
+
+//settings
+
+
+
+const playerBlock = document.querySelector('.player')
+const weatherBlock = document.querySelector('.weather')
+const dateBlock = document.querySelector('.date')
+const greetBlock = document.querySelector('.greeting-container')
+const quoteBlock = document.querySelector('.quote-block')
+
+
+
+let settingValue = document.querySelectorAll('.setting-item-range')
+const settingsList = [playerBlock,weatherBlock,dateBlock,greetBlock,quoteBlock]
+
+let arraySetInput = Array.from(settingValue)
+
+
+function changeSetting (event) {
+  let clickedInput = event.target
+  let inputIndex = clickedInput.id
+ if (arraySetInput.value === 0){
+  arraySetInput.forEach(() => {
+    settingsList[inputIndex].style.visibility = 'visible'
+  })
+ } else {
+  arraySetInput.forEach(() => {
+      settingsList[inputIndex].style.visibility = 'hidden'
+    })
+ }
+}
+
+
+
+
+arraySetInput.forEach((el)=> {
+  el.addEventListener('input', changeSetting)
+})
 

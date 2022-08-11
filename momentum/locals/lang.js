@@ -35,6 +35,14 @@ const langArr = {
   "city": {
     "Ru": "Минск",
     "En": "Minsk",
+  },
+  "settings-blocks": {
+    "Ru": ["Плеер", "Погода", "Дата", "Приветствие", "Цитаты"],
+    "En": ["Player", "Weather", "Date", "Greeting", "Quotes"],
+  },
+  "settings-option": {
+    "Ru": "Показать / скрыть",
+    "En": "Show / Hide",
   }
 
   }
