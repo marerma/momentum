@@ -1,11 +1,14 @@
 //time
+
+
 const time = document.querySelector('.time')
 const dateFull = document.querySelector('.date')
 
 const langName = document.querySelector('.lang-name')
 let langList = ['En', 'Ru']
 const langBtn = document.querySelector('.lang-icon')
-let langDefault = 'Ru'
+let langDefault = langList[1]
+
 let language
 let windSpeed;
 let humidityScale;
@@ -91,7 +94,12 @@ function changeLanguageName () {
 }
 
 function setLanguageDefault () {
+  if(localStorage.getItem('language')) {
+    langName.textContent =  localStorage.getItem('language')
+  } else {
     langName.textContent = langDefault
+  }
+    
     let greetName = document.querySelector('.placeholderName')
     greetName.setAttribute('placeholder', langArr['placeholderName'][langDefault])
     greeting.textContent = `${langArr[timeOfDay][langDefault]},` 
@@ -99,7 +107,7 @@ function setLanguageDefault () {
     speed = `${langArr['weather'][langDefault][2]}`
     windSpeed = `${langArr['weather'][langDefault][0]}`
     humidityScale = `${langArr['weather'][langDefault][1]}`
-    city.value = "Минск"
+    city.value = langArr['city'][langDefault]
     city.setAttribute('placeholder', langArr['city'][langDefault])
     setLangSetting ()
   }
@@ -122,21 +130,7 @@ function changeLanguage () {
 //name
 const userName = document.querySelector('.name')
 
-function setLocalStorage() {
-  localStorage.setItem('name', userName.value);
-  localStorage.setItem('city', city.value)
-}
-window.addEventListener('beforeunload', setLocalStorage)
 
-function getLocalStorage() {
-  if(localStorage.getItem('name')) {
-    userName.value = localStorage.getItem('name');
-  }
-
-  if(localStorage.getItem('city'))
-  city.value = localStorage.getItem('city')
-}
-window.addEventListener('load', getLocalStorage)
 
 //bg and slider
 const body = document.querySelector('body')
@@ -229,13 +223,13 @@ async function getQuotes() {
   const quotes = `./assets/quotes-${language}.json`;
   const res = await fetch(quotes);
   const data = await res.json();
-  let numberOfQuote = getRandomNum(0, data.quotes.length) 
+  let numberOfQuote = getRandomNum(0, data.quotes.length - 1) 
   quoteText.textContent = `"${data.quotes[numberOfQuote].quote}"`
   quoteAuthor.textContent = data.quotes[numberOfQuote].author
 }
 
 buttonQuote.addEventListener('click', getQuotes)
-getQuotes();
+//getQuotes();
 
 //audioplayer
 
@@ -414,7 +408,13 @@ function audioControl () {
 }
 
 //settings
+const setBtn = document.querySelector('.setting-icon')
+const setBlock = document.querySelector('.settings-container')
+setBtn.addEventListener('click', openSettings)
 
+function openSettings () {
+  setBlock.classList.toggle('visible')
+}
 
 
 const playerBlock = document.querySelector('.player')
@@ -423,32 +423,93 @@ const dateBlock = document.querySelector('.date')
 const greetBlock = document.querySelector('.greeting-container')
 const quoteBlock = document.querySelector('.quote-block')
 
-
-
 let settingValue = document.querySelectorAll('.setting-item-range')
 const settingsList = [playerBlock,weatherBlock,dateBlock,greetBlock,quoteBlock]
-
 let arraySetInput = Array.from(settingValue)
+
+let settingsObject = [
+  {
+ 'inputIndex': '0',
+ 'value': '1'
+},
+{
+  'inputIndex': '1',
+  'value': '1'
+ },
+ {
+  'inputIndex': '2',
+  'value': '1'
+ },
+ {
+  'inputIndex': '3',
+  'value': '1'
+ },
+ {
+  'inputIndex': '4',
+  'value': '1'
+ }
+]
+
+
+function loadSettings () {
+  arraySetInput.forEach((el, index)=> {
+    el.setAttribute('value', settingsObject[index]['value'])
+    if (el.value === '1') {
+      settingsList[index].classList.remove('hidden')
+    } else {
+      settingsList[index].classList.add('hidden')
+    }
+  })
+}
 
 
 function changeSetting (event) {
   let clickedInput = event.target
-  let inputIndex = clickedInput.id
- if (arraySetInput.value === 0){
-  arraySetInput.forEach(() => {
-    settingsList[inputIndex].style.visibility = 'visible'
-  })
- } else {
-  arraySetInput.forEach(() => {
-      settingsList[inputIndex].style.visibility = 'hidden'
-    })
- }
+  let inputIndex = Number(clickedInput.id)
+  settingsList[inputIndex].classList.toggle('hidden')
+  x(inputIndex)
 }
 
-
-
+function x (a) {
+  settingsObject[a].value = arraySetInput[a].value
+ return settingsObject
+}
 
 arraySetInput.forEach((el)=> {
   el.addEventListener('input', changeSetting)
 })
+
+
+function setLocalStorage() {
+  localStorage.setItem('name', userName.value);
+  localStorage.setItem('city', city.value);
+  localStorage.setItem('settings', JSON.stringify(settingsObject));
+  localStorage.setItem('language', langSelected);
+}
+window.addEventListener('beforeunload', setLocalStorage)
+
+function getLocalStorage() {
+  if(localStorage.getItem('name')) {
+    userName.value = localStorage.getItem('name');
+  }
+
+  if(localStorage.getItem('city')) {
+  city.value = localStorage.getItem('city')
+}
+
+if(localStorage.getItem('settings')) {
+  let a = localStorage.getItem('settings');
+  settingsObject = JSON.parse(a);
+  loadSettings()
+}
+
+if(localStorage.getItem('language')) {
+  langDefault = localStorage.getItem('language')
+  language = langArr['lang'][localStorage.getItem('language')]
+  setLanguageDefault()
+  getQuotes()
+  getWeather ()
+}
+}
+window.addEventListener('load', getLocalStorage)
 
