@@ -146,11 +146,8 @@ function getRandomNum(min, max) {
 }
 
 let bgNum = getRandomNum(1, 20)
-
-
 const selectedSrc = document.querySelectorAll('.picsource-item')
 let urlPicture
-
 
 
 function setBg () {
@@ -167,29 +164,98 @@ function setBg () {
 setBg()
 
 function getNextSlide () {
-  if (bgNum != 20) {
-    bgNum = bgNum + 1
-  } else {
-    bgNum = 1
+  getCheckedBtn ()
+  switch(urlPicture){
+    case 'api':  
+    setBgAPI ()
+    break 
+    case 'flickr': 
+    setBgFlickr ()
+    break
+    case 'git': 
+    if (bgNum != 20) {
+      bgNum = bgNum + 1
+    } else {
+      bgNum = 1
+    } 
+    setBg(bgNum)
   } 
-   setBg(bgNum)
 }
 
 function getPrevSlide () {
-  if (bgNum > 1) {
-    bgNum = bgNum - 1
-  } else {
-    bgNum = 20
+  getCheckedBtn ()
+  switch(urlPicture){
+    case 'api':  
+    setBgAPI ()
+    break 
+    case 'flickr':
+    setBgFlickr ()
+    break
+    case 'git': 
+    if (bgNum > 1) {
+      bgNum = bgNum - 1
+    } else {
+      bgNum = 20
+    } setBg(bgNum) 
   }
-   setBg(bgNum)
+}
+
+const formPic = document.querySelector('.picsource')
+
+formPic.addEventListener("click", chooseSource)
+
+  function getCheckedBtn () {
+    let a = Array.from(selectedSrc)
+    a.forEach(el => {
+      if (el.checked) {
+        urlPicture = el.value
+      } return urlPicture
+    })
+  }
+
+
+function chooseSource () {
+  getCheckedBtn ()
+  if (urlPicture === 'api') {
+    setBgAPI ()
+  } else if (urlPicture === 'git') {
+    setBg()
+  } else if (urlPicture === 'flickr') {
+    setBgFlickr()
+  }
+}
+
+async function setBgAPI () {
+  const timeOfDay =  getTimeOfDay()
+  let u = `https://api.unsplash.com/photos/random?orientation=landscape&query=${timeOfDay}&client_id=0E9b0WsHpRiczJXUwyigvEnJBdZwcDRh11Rxf4k3ZN8`
+  const resApi = await fetch(u)
+  const data = await resApi.json()
+  let imageLink = data.urls.regular
+  const img = new Image()
+  img.src = imageLink
+  img.onload = () => {
+   body.style.backgroundImage = `url(${imageLink})`
+   }
+}
+
+async function setBgFlickr () {
+  let numString = getRandomNum(0, 35).toString()
+  const timeOfDay =  getTimeOfDay()
+  let u = `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=e5a03c21036c35c6b22e2259406e2ff2&tags=${timeOfDay},nature&tag_mode=all&extras=url_l&format=json&nojsoncallback=1&sort=relevance`
+  const resApi = await fetch(u)
+  const data = await resApi.json()
+  let imageLink = data.photos.photo[numString].url_l
+  const img = new Image()
+  img.src = imageLink
+  img.onload = () => {
+   body.style.backgroundImage = `url(${imageLink})`
+   }
 }
 
 sliderNext.addEventListener('click', getNextSlide)
 sliderPrev.addEventListener('click', getPrevSlide)
 
 //weather
-
-
 
 const weatherIcon = document.querySelector('.weather-icon');
 const temp = document.querySelector('.temperature');
@@ -492,6 +558,7 @@ function setLocalStorage() {
   localStorage.setItem('city', city.value);
   localStorage.setItem('settings', JSON.stringify(settingsObject));
   localStorage.setItem('language', langSelected);
+  localStorage.setItem('picsrc', urlPicture);
 }
 window.addEventListener('beforeunload', setLocalStorage)
 
@@ -517,42 +584,18 @@ if(localStorage.getItem('language')) {
   getQuotes()
   getWeather ()
 }
+if(localStorage.getItem('picsrc')) {
+  let allRadiobtn = Array.from(document.querySelectorAll('.picsource-item'))
+   urlPicture = localStorage.getItem('picsrc')
+   allRadiobtn.forEach((el)=>{
+    el.checked = false
+    if (el.value === urlPicture) {
+      el.checked = true
+    }
+  })
+ 
+  chooseSource ()
+}
+
 }
 window.addEventListener('load', getLocalStorage)
-
-
-const formPic = document.querySelector('.picsource')
-
-formPic.addEventListener("click", getCheckedBtn)
-
-  function getCheckedBtn () {
-    let a = Array.from(selectedSrc)
-    a.forEach(el => {
-      if (el.checked) {
-        urlPicture = el.value
-      } return urlPicture
-    })
-  }
-
-/*
-function a () {
-  getCheckedBtn ()
-  /*if (urlPicture === 'api') {
-    setBgAPI ()
-  } else if (urlPicture === 'git') {
-    setBg()
-  }
-
-}*/
-
-function setBgAPI () {
-  let u = `https://api.unsplash.com/photos/random?orientation=landscape&query=evening&client_id=0E9b0WsHpRiczJXUwyigvEnJBdZwcDRh11Rxf4k3ZN8`
-  const resApi = await fetch(u)
-  const data = await resApi.json()
-  console.log(data)
- // const img = new Image()
-  //img.src = data.urls.regular
-  /*img.onload = () => {
-  body.style.backgroundImage = `url(${bgUrl})`
-}*/
-}
