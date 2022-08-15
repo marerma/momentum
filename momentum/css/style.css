@@ -269,7 +269,6 @@ padding-top: 5px;
   width: 180px;
   min-height: 180px;  
   text-align: left;
-  visibility: visible;
   transition: all 1s ease-out;
 }
 
@@ -495,7 +494,8 @@ width: 10px;
 height: 10px;
 }
 
-.settings-block-option {
+.settings-block-option,
+.settings-block-pic {
   font-family: 'Arial', sans-serif;
   font-size: 14px;
   color: rgb(35, 34, 49);
@@ -529,4 +529,14 @@ height: 10px;
   height: 30px;
   margin-right: 10px;
   opacity: 0.5;
+}
+
+.picsource-item {
+  margin-left: 5px;
+  margin-bottom: 10px;
+}
+
+.picsource-item-label {
+  margin-right: 6px;
+  margin-bottom: 10px;
 }

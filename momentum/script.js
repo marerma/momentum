@@ -23,6 +23,7 @@ for (let i = 0; i < arraySettings.length; i++) {
   arraySettings[i].textContent = `${langArr['settings-blocks'][langDefault][i]}`
 }
 document.querySelector('.settings-block-option').textContent = `${langArr['settings-option'][langDefault]}`
+document.querySelector('.settings-block-pic').textContent = `${langArr['settings-pic'][langDefault]}`
 }
 
 function changeLangSetting () {
@@ -31,6 +32,7 @@ function changeLangSetting () {
     arraySettings[i].textContent = `${langArr['settings-blocks'][langSelected][i]}`
   }
   document.querySelector('.settings-block-option').textContent = `${langArr['settings-option'][langSelected]}`
+  document.querySelector('.settings-block-pic').textContent = `${langArr['settings-pic'][langSelected]}`
   }
 
 const city = document.querySelector('.city')
@@ -145,18 +147,24 @@ function getRandomNum(min, max) {
 
 let bgNum = getRandomNum(1, 20)
 
-function setBg (num) {
-  let numString = num.toString().padStart(2, "0")
-  const timeOfDay =  getTimeOfDay()
-  const bgUrl = `https://raw.githubusercontent.com/marerma/stage1-tasks/assets/images/${timeOfDay}/${numString}.jpg`
-  const img = new Image()
-  img.src = bgUrl
-  img.onload = () => {
-  body.style.backgroundImage = `url(${bgUrl})`
-  }
-}
 
-setBg(bgNum)
+const selectedSrc = document.querySelectorAll('.picsource-item')
+let urlPicture
+
+
+
+function setBg () {
+    let numString = bgNum.toString().padStart(2, "0")
+    const timeOfDay =  getTimeOfDay()
+    const bgUrl = `https://raw.githubusercontent.com/marerma/stage1-tasks/assets/images/${timeOfDay}/${numString}.jpg`
+    const img = new Image()
+    img.src = bgUrl
+    img.onload = () => {
+     body.style.backgroundImage = `url(${bgUrl})`
+     }
+  }
+
+setBg()
 
 function getNextSlide () {
   if (bgNum != 20) {
@@ -382,7 +390,6 @@ function progressUpdate () {
   trackTime.textContent = `${trackDuration.getMinutes()}:${trackDuration.getSeconds()}`
   let currentSec = currentTime.getSeconds().toString().padStart(2, '0')
   currentTrackTime.textContent = `${currentTime.getMinutes()}:${currentSec}`
-
 }
 
 playListElement.addEventListener('click', clickTrackTitle)
@@ -393,9 +400,9 @@ function clickTrackTitle (event) {
   playList.forEach((el, index)=> {
     if (trackTitle === el.title) {
       songNum = index
-      playSong() //подумать над паузой и плеем при переключении
-      }
-    })
+      playAudio() //подумать над паузой и плеем при переключении
+      } 
+    })     
 }
 
 function audioControl () {
@@ -424,7 +431,7 @@ const greetBlock = document.querySelector('.greeting-container')
 const quoteBlock = document.querySelector('.quote-block')
 
 let settingValue = document.querySelectorAll('.setting-item-range')
-const settingsList = [playerBlock,weatherBlock,dateBlock,greetBlock,quoteBlock]
+const settingsList = [playerBlock, weatherBlock, dateBlock, greetBlock, quoteBlock]
 let arraySetInput = Array.from(settingValue)
 
 let settingsObject = [
@@ -513,3 +520,39 @@ if(localStorage.getItem('language')) {
 }
 window.addEventListener('load', getLocalStorage)
 
+
+const formPic = document.querySelector('.picsource')
+
+formPic.addEventListener("click", getCheckedBtn)
+
+  function getCheckedBtn () {
+    let a = Array.from(selectedSrc)
+    a.forEach(el => {
+      if (el.checked) {
+        urlPicture = el.value
+      } return urlPicture
+    })
+  }
+
+/*
+function a () {
+  getCheckedBtn ()
+  /*if (urlPicture === 'api') {
+    setBgAPI ()
+  } else if (urlPicture === 'git') {
+    setBg()
+  }
+
+}*/
+
+function setBgAPI () {
+  let u = `https://api.unsplash.com/photos/random?orientation=landscape&query=evening&client_id=0E9b0WsHpRiczJXUwyigvEnJBdZwcDRh11Rxf4k3ZN8`
+  const resApi = await fetch(u)
+  const data = await resApi.json()
+  console.log(data)
+ // const img = new Image()
+  //img.src = data.urls.regular
+  /*img.onload = () => {
+  body.style.backgroundImage = `url(${bgUrl})`
+}*/
+}

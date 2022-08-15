@@ -43,6 +43,11 @@ const langArr = {
   "settings-option": {
     "Ru": "Показать / скрыть",
     "En": "Show / Hide",
+  },
+
+  "settings-pic": {
+    "Ru": "Источник фона",
+    "En": "Pictures Source",
   }
 
   }
