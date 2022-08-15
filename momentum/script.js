@@ -466,10 +466,12 @@ function clickTrackTitle (event) {
   playList.forEach((el, index)=> {
     if (trackTitle === el.title) {
       songNum = index
-      playAudio() //подумать над паузой и плеем при переключении
-      } 
-    })     
+   playAudio()//подумать над паузой и плеем при переключении
+  }
+    })
+  
 }
+
 
 function audioControl () {
   let width = progressBar.offsetWidth
