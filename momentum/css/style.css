@@ -36,8 +36,179 @@ body {
   transition: 0.4s ease-in;
 }
 
+.todowrapper {
+  width: 33.3%;
+  transition: all 1s ease-in;
+  margin-left: 10px;
+  margin-right: 10px;
+  max-height: 180px; 
+  padding: 10px;
+}
+
+.todocontainer {
+  padding: 10px;
+  background-color: rgba(235, 235, 235, 0.5);
+  border-radius: 8px;
+  max-height: 160px;
+  overflow: auto;
+
+}
+.visibleTodo {
+  visibility: visible;
+}
+.todo-title{
+  font-size: 16px;
+  font-weight: bold;
+  padding-bottom: 5px;
+}
+
+
+.todocontainer::-webkit-scrollbar {
+  width: 8px;
+  border-radius: 8px;
+}
+
+.todocontainer::-webkit-scrollbar-track {
+  background: rgba(235, 235, 235, 0.5);
+  border-radius: 8px;
+}
+.todocontainer::-webkit-scrollbar-thumb {
+  background-color:rgb(63, 77, 122);
+  border-radius: 8px;
+}
+
+.todo-list {
+  list-style: none;
+  margin: 10px;
+}
+
+.todo-item {
+  position: relative;
+  text-align: left; 
+}
+
+.deleted {
+ text-decoration: line-through rgb(77, 88, 124) 2px;
+ position: relative;
+ text-align: left;
+}
+
+.addTask {
+  padding: 5px;
+}
+
+.addBtn {
+  height: 25px;
+  width: 35px;
+  display: inline-block;
+  position: relative;
+  top: 6px;
+  margin: 5px;
+  background: url('../assets/svg/checkbox-mark.svg') no-repeat center;
+  border: 1px solid rgb(132, 141, 170);
+  background-color: rgb(179, 182, 192);
+  border-radius: 2px;
+  color: rgb(15, 20, 37);
+}
+
+.deletebtn {
+  display: inline-block;
+  position: absolute;
+  right: 5px;
+  width: 15px;
+  height: 15px;
+  border: 1px solid rgb(15, 20, 37);
+  background-color: rgb(63, 77, 122);
+  border-radius: 2px;
+  font-size: 14px;
+  text-align: center;
+  line-height: 14px;
+  font-weight: bold;
+  color: rgb(15, 20, 37);
+}
+
+#descriptionTask {
+  background-color: rgba(63, 77, 122, 0.7);
+  border-radius: 2px;
+  font-size: 14px;
+  border: 1px solid rgba(63, 77, 122, 1);
+  height: 25px;
+  padding: 3px;
+  margin: 5px;
+  width: 70%;
+  font-family: 'Arial', sans-serif;
+  font-size: 14px;
+  color: #fff;
+  text-align: left;
+}
+
+#descriptionTask:active, #descriptionTask:focus {
+  background-color: rgba(63, 77, 122, 0.7);
+  border-radius: 2px;
+  font-size: 14px;
+  border: 1px solid rgba(63, 77, 122, 1);
+  height: 25px;
+  margin: 10px;
+  width: 70%;
+  outline: none;
+}
+
+.todoicon {
+  background: url("../assets/svg/toDolist.png") no-repeat center;
+  width: 24px;
+  height: 24px;
+  background-size: 24px 24px;
+  background-color: transparent;
+  border: 0;
+  outline: 0;
+  opacity: .8;
+  cursor: pointer;
+  transition: .3s;  
+  margin: 0 auto;
+  margin-bottom: 5px;
+}
+
+.checkboxbtn {
+  right: 15px;
+  display: inline-block;
+  position: absolute;
+  right: 25px;
+  width: 15px;
+  height: 15px;
+  border: 1px solid #dddddd;
+  background-color: #ffffff;
+  border-radius: 2px;
+  -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    appearance: none;
+    outline: 0;
+    box-shadow: none;
+  
+}
+
+.checked {
+  content: url('../assets/svg/checkbox-mark.svg');
+  border: 1px solid rgb(223, 225, 231);
+  background-color: rgb(192, 196, 209);
+  right: 15px;
+  display: inline-block;
+  position: absolute;
+  right: 25px;
+  width: 15px;
+  height: 15px;
+  border-radius: 2px;
+  -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    appearance: none;
+    outline: 0;
+    box-shadow: none;
+}
+
+
 .player {
-  width: 40%;
+  width: 33.3%;
   transition: all 1s ease-in;
 }
 
@@ -124,7 +295,8 @@ body {
 .volume-icon:hover,
 .lang-icon:hover,
 .setting-icon:hover,
-.logo-img:hover {
+.logo-img:hover,
+.todoicon:hover {
   opacity: 1;
 }
 
@@ -133,7 +305,8 @@ body {
 .change-quote:active,
 .lang-icon:active,
 .setting-icon:active,
-.logo-img:active {
+.logo-img:active,
+.todoicon:active {
   border: 0;
   outline: 0;  
   transform: scale(1.1);
@@ -277,9 +450,9 @@ padding-top: 5px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: flex-end;
   row-gap: 5px;
-  width: 180px;
+  width: 33.3%;
   min-height: 180px;  
   text-align: left;
   transition: all 1s ease-out;
@@ -595,13 +768,13 @@ height: 10px;
   height: 20vh;
 }
 
-.greeting-container {
+.greeting-container{
   min-height: 20px;
-  font-size: 24px;
+  font-size: 22px;
 }
 
 .name {
-  font-size: 24px;
+  font-size: 20px;
   padding: 5px;
 }
 
@@ -619,5 +792,13 @@ height: 10px;
   font-size: 12px;
   height: 26px;
   width:70px;
+}
+
+.todocontainer, .todoicon {
+  visibility: hidden;
+}
+
+.main {
+  padding: 5px;
 }
 }

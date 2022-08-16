@@ -1,6 +1,5 @@
 //time
 
-
 const time = document.querySelector('.time')
 const dateFull = document.querySelector('.date')
 
@@ -16,6 +15,7 @@ let url
 let speed
 let settingItems = document.querySelectorAll('.setting-item-name')
 
+let tasks = []
 
 function setLangSetting () {
 let arraySettings = Array.from(settingItems)
@@ -24,6 +24,7 @@ for (let i = 0; i < arraySettings.length; i++) {
 }
 document.querySelector('.settings-block-option').textContent = `${langArr['settings-option'][langDefault]}`
 document.querySelector('.settings-block-pic').textContent = `${langArr['settings-pic'][langDefault]}`
+document.querySelector('.todo-title').textContent = `${langArr['todo'][langDefault]}`
 }
 
 function changeLangSetting () {
@@ -33,7 +34,8 @@ function changeLangSetting () {
   }
   document.querySelector('.settings-block-option').textContent = `${langArr['settings-option'][langSelected]}`
   document.querySelector('.settings-block-pic').textContent = `${langArr['settings-pic'][langSelected]}`
-  }
+  document.querySelector('.todo-title').textContent = `${langArr['todo'][langSelected]}`  
+}
 
 const city = document.querySelector('.city')
 
@@ -101,6 +103,11 @@ function setLanguageDefault () {
   } else {
     langName.textContent = langDefault
   }
+
+  if(localStorage.getItem('city')) {
+    city.value = localStorage.getItem('city')
+  } else {city.value = langArr['city'][langDefault]
+  }
     
     let greetName = document.querySelector('.placeholderName')
     greetName.setAttribute('placeholder', langArr['placeholderName'][langDefault])
@@ -109,7 +116,6 @@ function setLanguageDefault () {
     speed = `${langArr['weather'][langDefault][2]}`
     windSpeed = `${langArr['weather'][langDefault][0]}`
     humidityScale = `${langArr['weather'][langDefault][1]}`
-    city.value = langArr['city'][langDefault]
     city.setAttribute('placeholder', langArr['city'][langDefault])
     setLangSetting ()
   }
@@ -124,14 +130,14 @@ function changeLanguage () {
     speed = `${langArr['weather'][langSelected][2]}`
     windSpeed = `${langArr['weather'][langSelected][0]}`
     humidityScale = `${langArr['weather'][langSelected][1]}`
-    city.setAttribute('placeholder', langArr['city'][langSelected])
-    city.value = langArr['city'][langSelected]
+    if(localStorage.getItem('city')) {
+      city.value = localStorage.getItem('city')
+    } else city.value = langArr['city'][langSelected]    
     changeLangSetting ()
 }
 
 //name
 const userName = document.querySelector('.name')
-
 
 
 //bg and slider
@@ -303,7 +309,7 @@ async function getQuotes() {
 }
 
 buttonQuote.addEventListener('click', getQuotes)
-//getQuotes();
+getQuotes();
 
 //audioplayer
 
@@ -497,9 +503,10 @@ const weatherBlock = document.querySelector('.weather')
 const dateBlock = document.querySelector('.date')
 const greetBlock = document.querySelector('.greeting-container')
 const quoteBlock = document.querySelector('.quote-block')
+const todoBlock = document.querySelector('.todocontainer')
 
 let settingValue = document.querySelectorAll('.setting-item-range')
-const settingsList = [playerBlock, weatherBlock, dateBlock, greetBlock, quoteBlock]
+const settingsList = [playerBlock, weatherBlock, dateBlock, greetBlock, quoteBlock, todoBlock]
 let arraySetInput = Array.from(settingValue)
 
 let settingsObject = [
@@ -522,9 +529,12 @@ let settingsObject = [
  {
   'inputIndex': '4',
   'value': '1'
+ },
+ {
+  'inputIndex': '5',
+  'value': '1'
  }
 ]
-
 
 function loadSettings () {
   arraySetInput.forEach((el, index)=> {
@@ -561,7 +571,9 @@ function setLocalStorage() {
   localStorage.setItem('settings', JSON.stringify(settingsObject));
   localStorage.setItem('language', langSelected);
   localStorage.setItem('picsrc', urlPicture);
+  updateLocalStorage ()
 }
+
 window.addEventListener('beforeunload', setLocalStorage)
 
 function getLocalStorage() {
@@ -586,6 +598,12 @@ if(localStorage.getItem('language')) {
   getQuotes()
   getWeather ()
 }
+
+if(localStorage.getItem('taskList')) {
+  tasks = JSON.parse(localStorage.getItem('taskList'))
+  addHTMLlist() 
+}
+
 if(localStorage.getItem('picsrc')) {
   let allRadiobtn = Array.from(document.querySelectorAll('.picsource-item'))
    urlPicture = localStorage.getItem('picsrc')
@@ -595,9 +613,109 @@ if(localStorage.getItem('picsrc')) {
       el.checked = true
     }
   })
- 
-  chooseSource ()
+   chooseSource ()
+}
 }
 
-}
 window.addEventListener('load', getLocalStorage)
+
+// to do list
+
+const addTaskBtn = document.querySelector('.addBtn')
+const descriptionTask = document.getElementById('descriptionTask')
+const taskList = document.querySelector('.todo-list')
+let elements = []
+let deleteBtn = []
+
+function Task(description) {
+  this.description = description;
+  this.done = false;
+}
+
+
+addTaskBtn.addEventListener('click', addTask)
+
+function addTask () {
+  tasks.push(new Task(descriptionTask.value))
+  updateLocalStorage ()
+  addHTMLlist () 
+  descriptionTask.value =''
+}
+
+function updateLocalStorage () {
+  localStorage.setItem('taskList', JSON.stringify(tasks))
+}
+
+function addHTMLlist () {
+  taskList.innerHTML = ''
+  if (tasks.length > 0) {
+    filterTasks()
+    tasks.forEach((el, index) => {
+      taskList.innerHTML += makeTaskElement(el, index)
+    })
+  }
+  elements = document.querySelectorAll('.todo-item')
+  deleteBtn = document.querySelectorAll('.deletebtn')
+}
+
+function filterTasks () {
+  if (tasks.length > 0) {
+    const activeTasks = tasks.filter(el => el.done === false)
+    const finishedTasks = tasks.filter(el => el.done === true) 
+      tasks = [...activeTasks, ...finishedTasks]
+    }
+}   
+
+function makeTaskElement (task, index) {
+  return `<li class="todo-item ${task.done? 'deleted' : ''}">${index+1}. ${task.description}
+  <input id="${index}" class="checkboxbtn ${task.done? 'checked' : ''}" type="checkbox" ${task.done? 'checked': ''}>
+  <button class="deletebtn">X</button>
+</li>`
+}
+
+taskList.addEventListener('click',finishTask)
+ 
+ function finishTask (event) {
+    let clickedItem = event.target 
+    let index = Number(clickedItem.id)
+  if (clickedItem.classList.contains('checkboxbtn')) {
+    tasks[index].done = !tasks[index].done
+    if (tasks[index].done === true) {
+      clickedItem.classList.add("checked")
+      elements[index].classList.add("deleted")
+    } else {
+      clickedItem.classList.remove("checked")
+      elements[index].classList.remove("deleted")
+    }
+  }
+  updateLocalStorage()
+}
+
+function deleteTask(event) {
+  let clickedItem = event.target 
+  let index
+  if (clickedItem.classList.contains('deletebtn')) {
+      deleteBtn.forEach((el, ind) => {
+        clickedItem === el ? index = ind : index
+      })
+      tasks.splice(index, 1)
+      updateLocalStorage(
+      addHTMLlist()
+      )
+  }
+}
+
+
+taskList.addEventListener('click',deleteTask)
+
+
+const toDoBtn = document.querySelector('.todoicon')
+toDoBtn.addEventListener('click', ()=> {
+  if (document.querySelector('.todocontainer').classList.contains('hidden')) {
+     document.querySelector('.todocontainer').classList.remove('hidden')
+  } else {
+    document.querySelector('.todocontainer').classList.add('hidden')
+  }
+ 
+})
+

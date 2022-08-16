@@ -37,8 +37,8 @@ const langArr = {
     "En": "Minsk",
   },
   "settings-blocks": {
-    "Ru": ["Плеер", "Погода", "Дата", "Приветствие", "Цитаты"],
-    "En": ["Player", "Weather", "Date", "Greeting", "Quotes"],
+    "Ru": ["Плеер", "Погода", "Дата", "Приветствие", "Цитаты", "Список дел"],
+    "En": ["Player", "Weather", "Date", "Greeting", "Quotes", "To-Do List"],
   },
   "settings-option": {
     "Ru": "Показать / скрыть",
@@ -48,6 +48,11 @@ const langArr = {
   "settings-pic": {
     "Ru": "Источник фона",
     "En": "Pictures Source",
+  },
+
+  "todo": {
+    "Ru": "Список дел",
+    "En": "To-Do List",
   }
 
   }
