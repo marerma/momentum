@@ -1,5 +1,3 @@
-//time
-
 const time = document.querySelector('.time')
 const dateFull = document.querySelector('.date')
 
@@ -40,13 +38,11 @@ function changeLangSetting () {
 const city = document.querySelector('.city')
 
 
-//greetings
 const greeting = document.querySelector('.greeting')
 let timeOfDay = getTimeOfDay()
 setLanguageDefault()
 let langSelected = langName.textContent
 
-/*greeting.textContent = //`Good ${timeOfDay},`*/
 
 function getTimeOfDay () {
   const date = new Date()
@@ -136,11 +132,9 @@ function changeLanguage () {
     changeLangSetting ()
 }
 
-//name
+
 const userName = document.querySelector('.name')
 
-
-//bg and slider
 const body = document.querySelector('body')
 const sliderNext = document.querySelector('.slide-next')
 const sliderPrev = document.querySelector('.slide-prev')
@@ -261,7 +255,6 @@ async function setBgFlickr () {
 sliderNext.addEventListener('click', getNextSlide)
 sliderPrev.addEventListener('click', getPrevSlide)
 
-//weather
 
 const weatherIcon = document.querySelector('.weather-icon');
 const temp = document.querySelector('.temperature');
@@ -294,7 +287,6 @@ getWeather()
 city.addEventListener('change', getWeather)
 
 
-//quotes
 let quoteText = document.querySelector('.quote')
 let quoteAuthor = document.querySelector('.author')
 const buttonQuote = document.querySelector('.change-quote')
@@ -311,7 +303,6 @@ async function getQuotes() {
 buttonQuote.addEventListener('click', getQuotes)
 getQuotes();
 
-//audioplayer
 
 import playList from './audio/play-list.js'
 
@@ -406,7 +397,7 @@ function changeClassActiveSong () {
 
 audio.addEventListener('ended', (event) => nextSong())
 
-//advanced player
+
 const volumeBtn = document.querySelector('.volume-icon')
 const volumeRange = document.querySelector('.volume-range')
 
@@ -472,10 +463,9 @@ function clickTrackTitle (event) {
   playList.forEach((el, index)=> {
     if (trackTitle === el.title) {
       songNum = index
-   playAudio()//подумать над паузой и плеем при переключении
+   playAudio()
   }
     })
-  
 }
 
 
@@ -488,7 +478,6 @@ function audioControl () {
   audio.play()
 }
 
-//settings
 const setBtn = document.querySelector('.setting-icon')
 const setBlock = document.querySelector('.settings-container')
 setBtn.addEventListener('click', openSettings)
@@ -577,7 +566,8 @@ function setLocalStorage() {
 window.addEventListener('beforeunload', setLocalStorage)
 
 function getLocalStorage() {
-  if(localStorage.getItem('name')) {
+  
+if(localStorage.getItem('name')) {
     userName.value = localStorage.getItem('name');
   }
 
@@ -614,12 +604,11 @@ if(localStorage.getItem('picsrc')) {
     }
   })
    chooseSource ()
-}
+}  
 }
 
 window.addEventListener('load', getLocalStorage)
 
-// to do list
 
 const addTaskBtn = document.querySelector('.addBtn')
 const descriptionTask = document.getElementById('descriptionTask')
@@ -713,9 +702,12 @@ const toDoBtn = document.querySelector('.todoicon')
 toDoBtn.addEventListener('click', ()=> {
   if (document.querySelector('.todocontainer').classList.contains('hidden')) {
      document.querySelector('.todocontainer').classList.remove('hidden')
+     settingsObject[5].value = '1'
+     loadSettings()
   } else {
     document.querySelector('.todocontainer').classList.add('hidden')
+    settingsObject[5].value = '0'
+    loadSettings()
   }
- 
 })
 
